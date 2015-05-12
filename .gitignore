@@ -1,0 +1,15 @@
+
+# vim files
+*.sw?
+
+# emacs files
+.#*
+\#i\#
+
+# ensime
+.ensime
+.ensime_cache
+
+# sbt
+project/target
+target
