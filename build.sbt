@@ -7,6 +7,6 @@ scalaVersion := "2.11.6"
 scalacOptions ++= Seq(
   "-deprecation",
   "-feature",
-  "encoding", "UTF-8",
+  "-encoding", "UTF-8",
   "-language:postfixOps"
 )
