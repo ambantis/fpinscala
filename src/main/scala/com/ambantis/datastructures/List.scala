@@ -6,15 +6,25 @@ sealed trait List[+A] {
   def head: A
   def tail: List[A]
   def isEmpty: Boolean
+  def reverse: List[A]
 }
 
 case object Nil extends List[Nothing] {
   def head = throw new IllegalArgumentException("call to head of empty list")
   def tail = throw new IllegalArgumentException("call to tail of empty list")
   def isEmpty = true
+  def reverse = this
 }
 case class Cons[+A](head: A, tail: List[A]) extends List[A] {
   val isEmpty = false
+  def reverse: List[A] = {
+    @tailrec
+    def loop(acc: List[A], rem: List[A]): List[A] = rem match {
+      case Nil => acc
+      case Cons(first, rest) => loop(Cons(first, acc), rest)
+    }
+    loop(Nil, this)
+  }
 }
 
 object List {
