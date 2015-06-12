@@ -53,6 +53,10 @@ trait RNG {
     else nonNegativeLessThan(n)
   }
 
+  def rollDie: Rand[Int] = map(nonNegativeLessThan(6))(_ + 1)
+
+  def rollNDie(n: Int): Rand[List[Int]] = sequence(List.fill(n)(rollDie))
+
 }
 
 object RNG {

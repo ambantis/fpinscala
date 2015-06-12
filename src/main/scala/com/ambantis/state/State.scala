@@ -1,7 +1,5 @@
 package com.ambantis.state
 
-import com.ambantis.random._
-
 case class State[S,+A](run: S => (A,S)) {
   import State.unit
 
