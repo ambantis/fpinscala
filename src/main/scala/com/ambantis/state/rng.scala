@@ -1,4 +1,4 @@
-package com.ambantis.random
+package com.ambantis.state
 
 import scala.annotation.tailrec
 
@@ -19,9 +19,8 @@ trait RNG {
 
   def unit[A](a: A): Rand[A] = rng => (a, rng)
 
-  def map[A,B](s: Rand[A])(f: A => B): Rand[B] = rng => {
-    val (a, rng2) = s(rng)
-    f(a) -> rng2
+  def map[A,B](s: Rand[A])(f: A => B): Rand[B] = flatMap(s) { a =>
+      unit(f(a))
   }
 
   def ints(n: Int): Rand[List[Int]] = sequence(List.fill(n)(int))
@@ -40,14 +39,19 @@ trait RNG {
 
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
     fs.foldRight(unit(List.empty[A])) { (b, a) =>
-      map(both(b,a))(tup => tup._1 :: tup._2)
+      map2(b,a)(_ :: _)
     }
-
   }
 
   def both[A,B](ra: Rand[A], rb: Rand[B]): Rand[(A,B)] = map2(ra, rb)((_, _))
 
   def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
+
+  def nonNegativeLessThan(n: Int): Rand[Int] = flatMap(nonNegativeInt) { a =>
+    val mod = a % n
+    if (a + (n-1) - mod >= 0) unit(mod)
+    else nonNegativeLessThan(n)
+  }
 
 }
 
